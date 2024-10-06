@@ -11,7 +11,7 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             background-color: #f0f0f0;
             overflow: hidden;
@@ -85,7 +85,7 @@
 
         function resizeCanvas() {
             const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9);
-            canvas.width = Math.min(maxSize, 600);
+            canvas.width = Math.floor(Math.min(maxSize, 600) / scale) * scale;
             canvas.height = canvas.width;
             scale = canvas.width / 20;
             rows = Math.floor(canvas.height / scale);
@@ -177,8 +177,10 @@
             this.y;
 
             this.randomLocation = function() {
-                this.x = Math.floor(Math.random() * columns) * scale;
-                this.y = Math.floor(Math.random() * rows) * scale;
+                do {
+                    this.x = Math.floor(Math.random() * columns) * scale;
+                    this.y = Math.floor(Math.random() * rows) * scale;
+                } while (snake.tail.some(segment => segment.x === this.x && segment.y === this.y));
             };
 
             this.draw = function() {

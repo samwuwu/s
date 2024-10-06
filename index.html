@@ -76,7 +76,6 @@
 
         let snake;
         let food;
-        let gameInterval;
         let isGameOver = false;
         let currentScore = 0;
 
@@ -84,8 +83,10 @@
 
         // Adjust canvas to appropriate size
         function resizeCanvas() {
-            canvas.width = Math.min(window.innerWidth * 0.8, 400);  // Limit canvas size for mobile and desktop
-            canvas.height = Math.min(window.innerHeight * 0.8, 400);
+            const minSize = Math.min(window.innerWidth, window.innerHeight);
+            canvas.width = Math.min(minSize * 0.8, 400);  // Keep canvas square
+            canvas.height = canvas.width;  // Maintain square shape
+            scale = canvas.width / 20;  // Dynamic scale based on canvas size
             rows = Math.floor(canvas.height / scale);
             columns = Math.floor(canvas.width / scale);
         }
@@ -122,11 +123,10 @@
                 this.x += this.xSpeed;
                 this.y += this.ySpeed;
 
-                // Wrap snake around canvas edges
-                if (this.x >= canvas.width) this.x = 0;
-                if (this.y >= canvas.height) this.y = 0;
-                if (this.x < 0) this.x = canvas.width - scale;
-                if (this.y < 0) this.y = canvas.height - scale;
+                // End game if snake hits the boundary
+                if (this.x >= canvas.width || this.y >= canvas.height || this.x < 0 || this.y < 0) {
+                    endGame();
+                }
             };
 
             this.changeDirection = function(direction) {
@@ -201,25 +201,34 @@
             currentScore = 0;
             updateScore(0);
 
-            gameInterval = window.setInterval(() => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                food.draw();
-                snake.update();
-                snake.draw();
-
-                if (snake.eat(food)) {
-                    food.randomLocation();
-                }
-
-                snake.checkCollision();
-            }, 100);
-
+            window.requestAnimationFrame(gameLoop);
             startButton.style.display = 'none'; // Hide the start button when game starts
+        }
+
+        let lastRenderTime = 0;
+        const gameSpeed = 100;  // Speed in milliseconds
+
+        function gameLoop(currentTime) {
+            if (isGameOver) return;
+            window.requestAnimationFrame(gameLoop);
+
+            if (currentTime - lastRenderTime < gameSpeed) return;
+            lastRenderTime = currentTime;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            food.draw();
+            snake.update();
+            snake.draw();
+
+            if (snake.eat(food)) {
+                food.randomLocation();
+            }
+
+            snake.checkCollision();
         }
 
         // End game and show score popup
         function endGame() {
-            clearInterval(gameInterval);
             isGameOver = true;
             scoreText.textContent = `游戏结束！你的得分是：${snake.total}`;
             scorePopup.style.display = 'block';
@@ -228,6 +237,7 @@
         // Restart game
         function restartGame() {
             scorePopup.style.display = 'none'; // Hide score popup
+            currentScore = 0;  // Reset score
             startGame(); // Restart the game
         }
 
@@ -264,17 +274,18 @@
 
             const diffX = touchEndX - touchStartX;
             const diffY = touchEndY - touchStartY;
+            const threshold = 30;  // Set minimum swipe distance to trigger direction change
 
             if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 0) {
+                if (diffX > threshold) {
                     snake.changeDirection('Right');
-                } else {
+                } else if (diffX < -threshold) {
                     snake.changeDirection('Left');
                 }
             } else {
-                if (diffY > 0) {
+                if (diffY > threshold) {
                     snake.changeDirection('Down');
-                } else {
+                } else if (diffY < -threshold) {
                     snake.changeDirection('Up');
                 }
             }

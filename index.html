@@ -9,21 +9,28 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: block;
             background-color: #f0f0f0;
             overflow: hidden;
+        }
+        #gameContainer {
+            display: block;
+            width: 100%;
+            position: relative;
+            top: 0;
+            left: 0;
+            text-align: center;
         }
         canvas {
             display: block;
             background-color: #000;
+            margin: 0 auto;
+            margin-top: 20px; /* 将画布距离顶部稍微留出一些空间 */
         }
         #scoreDisplay {
             font-size: 24px;
             color: #000;
-            margin-bottom: 10px;
+            margin: 10px 0;
             font-family: Arial, sans-serif;
         }
         #startButton {
@@ -54,7 +61,7 @@
         }
         #restartButton {
             position: fixed;
-            bottom: 20px; /* Positioning at the bottom */
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             padding: 20px 40px;
@@ -64,13 +71,15 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            display: none; /* Initially hidden */
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div id="scoreDisplay">得分: 0</div>
-    <canvas id="gameCanvas"></canvas>
+    <div id="gameContainer">
+        <div id="scoreDisplay">得分: 0</div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
     <button id="startButton">开始游戏</button>
     <div id="scorePopup">
         <p id="scoreText"></p>
@@ -173,10 +182,10 @@
             };
 
             this.eat = function(food) {
-                // 严格检测蛇的头部是否正好位于食物位置
+                // 严格检查蛇的头部是否完全匹配食物的位置
                 if (this.x === food.x && this.y === food.y) {
                     this.total++;
-                    updateScore(this.total);  // 更新分数
+                    updateScore(this.total);  // 更新得分
                     return true;
                 }
                 return false;
@@ -197,6 +206,7 @@
             this.y;
 
             this.randomLocation = function() {
+                // 确保食物生成在网格上
                 this.x = Math.floor(Math.random() * columns) * scale;
                 this.y = Math.floor(Math.random() * rows) * scale;
             };

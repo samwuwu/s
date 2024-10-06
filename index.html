@@ -75,14 +75,14 @@
 <body>
     <div id="gameContainer">
                 <div style="display: flex; align-items: center; gap: 10px;">
-            <button id="startButton" style="padding: 10px 20px; font-size: 16px;">开始游戏</button>
-            <div id="scoreDisplay">得分: 0</div>
+            <button id="startButton" style="padding: 10px; font-size: 24px; height: 50px;">开始游戏</button>
+            <div id="scoreDisplay" style="height: 50px; display: flex; align-items: center; justify-content: center;">得分: 0</div>
         </div>
         <canvas id="gameCanvas"></canvas>
             </div>
     <div id="scorePopup">
         <p id="scoreText"></p>
-        <button id="restartButton">重新开始</button>
+        <button id="restartButton" style="display: block; margin: 20px auto;">重新开始</button>
     </div>
 
     <script>

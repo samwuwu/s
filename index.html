@@ -238,8 +238,8 @@
             snake.changeDirection(direction);
         });
 
-        canvas.addEventListener('touchstart', handleTouchStart, false);
-        canvas.addEventListener('touchmove', handleTouchMove, false);
+        document.body.addEventListener('touchstart', handleTouchStart, false);
+        document.body.addEventListener('touchmove', handleTouchMove, false);
 
         let touchStartX = null;
         let touchStartY = null;

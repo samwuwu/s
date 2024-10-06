@@ -82,7 +82,8 @@
             </div>
     <div id="scorePopup">
         <p id="scoreText"></p>
-            </div>
+        <button id="restartButton">重新开始</button>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -227,7 +228,6 @@
             }, 100);
 
             startButton.style.display = 'none';
-            restartButton.style.display = 'none';
         }
 
         function endGame() {
@@ -235,12 +235,13 @@
             isGameOver = true;
             scoreText.textContent = `游戏结束！你的得分是: ${snake.total}`;
             scorePopup.style.display = 'block';
-            scorePopup.style.display = 'block';
+            restartButton.style.display = 'block';
         }
 
         function restartGame() {
             scorePopup.style.display = 'none';
-            startButton.style.display = 'block';
+            restartButton.style.display = 'none';
+            startGame();
             isGameOver = false;
         }
 

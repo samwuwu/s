@@ -96,8 +96,9 @@
 
         // Adjust canvas to appropriate size
         function resizeCanvas() {
-            canvas.width = Math.min(window.innerWidth * 0.8, 400);  // Limit canvas size for mobile and desktop
-            canvas.height = Math.min(window.innerHeight * 0.8, 400);
+            const minSize = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8);
+            canvas.width = Math.min(minSize, 400);  // Keep canvas square
+            canvas.height = canvas.width;  // Maintain square shape
             rows = Math.floor(canvas.height / scale);
             columns = Math.floor(canvas.width / scale);
         }
@@ -206,6 +207,10 @@
 
         // Start game
         function startGame() {
+            if (gameInterval) {
+                clearInterval(gameInterval);  // Clear any existing interval
+            }
+
             snake = new Snake();
             food = new Food();
             food.randomLocation();
@@ -242,7 +247,10 @@
         // Restart game
         function restartGame() {
             scorePopup.style.display = 'none'; // Hide score popup
-            startGame(); // Restart the game
+            isGameOver = false;  // Reset game state
+            currentScore = 0;    // Reset score
+            snake = new Snake(); // Reset snake state
+            startGame();         // Restart the game
         }
 
         // Update score display
@@ -254,9 +262,9 @@
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', restartGame);
 
-        // Handle touch events for mobile control on the entire body
-        document.body.addEventListener('touchstart', handleTouchStart, false);
-        document.body.addEventListener('touchmove', handleTouchMove, false);
+        // Handle touch events for mobile control on the canvas
+        canvas.addEventListener('touchstart', handleTouchStart, false);
+        canvas.addEventListener('touchmove', handleTouchMove, false);
 
         // Handle touch start
         function handleTouchStart(evt) {
@@ -292,9 +300,6 @@
                     snake.changeDirection('Up');
                 }
             }
-
-            touchStartX = touchEndX;
-            touchStartY = touchEndY;
         }
 
         // Variables for touch tracking

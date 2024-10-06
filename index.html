@@ -96,9 +96,10 @@
 
         // Adjust canvas to appropriate size
         function resizeCanvas() {
-            const minSize = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8);
-            canvas.width = Math.min(minSize, 400);  // Keep canvas square
-            canvas.height = canvas.width;  // Maintain square shape
+            const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9); // 将尺寸增大到90%
+            canvas.width = Math.min(maxSize, 600);  // 可以根据需要调整最大值，例如 600px
+            canvas.height = canvas.width;  // 保持正方形
+            scale = canvas.width / 20;  // 动态调整 scale，以适应更大的画布
             rows = Math.floor(canvas.height / scale);
             columns = Math.floor(canvas.width / scale);
         }

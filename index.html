@@ -76,12 +76,8 @@
     <div id="gameContainer">
                 <div id="controlCard" style="display: flex; align-items: center; justify-content: space-between; background-color: #fff; padding: 10px; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); margin-bottom: 20px; gap: 10px; width: 100%; max-width: 600px; box-sizing: border-box;">
             <button id="startButton" style="padding: 5px; font-size: 18px; height: 50px; width: 120px;">开始游戏</button>
-            <div id="scoreDisplay" style="height: 30px; width: 100px; display: none; align-items: center; justify-content: center;">得分: 0</div>
+            <div id="scoreDisplay" style="height: 30px; width: 100px; display: flex; align-items: center; justify-content: center;">得分: 0</div>
         </div>
-        </div>
-        <div id="leaderboardCard" style="display: none; align-items: center; justify-content: center; background-color: #fff; padding: 10px; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); margin-bottom: 20px; width: 100%; max-width: 600px; box-sizing: border-box;">
-            <h3>排行榜</h3>
-            <ol id="leaderboardList" style="padding: 0 20px;"></ol>
         </div>
         <canvas id="gameCanvas" style="border-radius: 10px;"></canvas>
             </div>
@@ -94,8 +90,6 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startButton = document.getElementById('startButton');
-        const leaderboardCard = document.getElementById('leaderboardCard');
-        const leaderboardList = document.getElementById('leaderboardList');
         const scorePopup = document.getElementById('scorePopup');
         const scoreText = document.getElementById('scoreText');
         const restartButton = document.getElementById('restartButton');
@@ -221,8 +215,8 @@
             food = new Food();
             food.randomLocation();
             isGameOver = false;
-            scoreDisplay.style.display = 'flex';
             updateScore(0);
+
             gameInterval = window.setInterval(() => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 food.draw();
@@ -238,8 +232,6 @@
         }
 
         function endGame() {
-            const playerName = prompt('游戏结束！请输入你的名字:');
-            updateLeaderboard(snake.total);
             clearInterval(gameInterval);
             isGameOver = true;
             scoreText.textContent = `游戏结束！你的得分是: ${snake.total}`;
@@ -248,7 +240,6 @@
         }
 
         function restartGame() {
-            leaderboardCard.style.display = 'none';
             scorePopup.style.display = 'none';
             restartButton.style.display = 'none';
             startGame();
@@ -256,15 +247,6 @@
         }
 
         function updateScore(score) {
-            scoreDisplay.textContent = `得分: ${score}`;
-        }
-
-        function updateLeaderboard(score) {
-            leaderboardCard.style.display = 'flex';
-            const listItem = document.createElement('li');
-            listItem.textContent = `${playerName || '未知玩家'} 得分: ${score}`;
-            leaderboardList.appendChild(listItem);
-        }
             scoreDisplay.textContent = `Score: ${score}`;
         }
 

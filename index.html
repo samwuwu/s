@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game with Fullscreen & Touch Control</title>
+    <title>Snake Game with Touch Control</title>
     <style>
         body, html {
             margin: 0;
@@ -33,7 +33,7 @@
         let food;
         let touchStartX, touchStartY;
 
-        // Adjust canvas to full screen
+        // Adjust canvas to fit the window
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -205,13 +205,6 @@
             touchStartX = null;
             touchStartY = null;
         }
-
-        // Request fullscreen on user interaction
-        document.body.addEventListener('click', function() {
-            if (document.fullscreenElement == null) {
-                canvas.requestFullscreen();
-            }
-        });
     </script>
 </body>
 </html>

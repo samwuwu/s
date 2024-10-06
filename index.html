@@ -218,6 +218,7 @@
             clearInterval(gameInterval);
             isGameOver = true;
             scoreText.textContent = `Game Over! Your score: ${snake.total}`;
+            restartButton.style.display = 'block';
             scorePopup.style.display = 'block';
         }
 

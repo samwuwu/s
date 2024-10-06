@@ -8,15 +8,23 @@
         body, html {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background-color: #f0f0f0;
+            overflow: hidden;
         }
         canvas {
             display: block;
+            background-color: #000;
+        }
+        #scoreDisplay {
+            font-size: 24px;
+            color: #000;
+            margin-bottom: 10px;
+            font-family: Arial, sans-serif;
         }
         #startButton, #restartButton {
             position: absolute;
@@ -47,6 +55,7 @@
     </style>
 </head>
 <body>
+    <div id="scoreDisplay">得分: 0</div>
     <canvas id="gameCanvas"></canvas>
     <button id="startButton">开始游戏</button>
     <div id="scorePopup">
@@ -61,6 +70,7 @@
         const scorePopup = document.getElementById('scorePopup');
         const scoreText = document.getElementById('scoreText');
         const restartButton = document.getElementById('restartButton');
+        const scoreDisplay = document.getElementById('scoreDisplay');
         let scale = 20;
         let rows, columns;
 
@@ -68,13 +78,14 @@
         let food;
         let gameInterval;
         let isGameOver = false;
+        let currentScore = 0;
 
         let touchStartX, touchStartY;
 
-        // Adjust canvas to full screen
+        // Adjust canvas to appropriate size
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.width = Math.min(window.innerWidth * 0.8, 400);  // Limit canvas size for mobile and desktop
+            canvas.height = Math.min(window.innerHeight * 0.8, 400);
             rows = Math.floor(canvas.height / scale);
             columns = Math.floor(canvas.width / scale);
         }
@@ -150,6 +161,7 @@
             this.eat = function(food) {
                 if (this.x === food.x && this.y === food.y) {
                     this.total++;
+                    updateScore(this.total);  // Update score when snake eats food
                     return true;
                 }
                 return false;
@@ -186,6 +198,8 @@
             food = new Food();
             food.randomLocation();
             isGameOver = false;
+            currentScore = 0;
+            updateScore(0);
 
             gameInterval = window.setInterval(() => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -215,6 +229,11 @@
         function restartGame() {
             scorePopup.style.display = 'none'; // Hide score popup
             startGame(); // Restart the game
+        }
+
+        // Update score display
+        function updateScore(score) {
+            scoreDisplay.textContent = `得分: ${score}`;
         }
 
         // Initial setup to start game on button click

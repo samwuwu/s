@@ -173,7 +173,8 @@
             };
 
             this.eat = function(food) {
-                if (this.x === food.x && this.y === food.y) {
+                // 检查蛇的头部是否正好位于食物位置
+                if (Math.abs(this.x - food.x) < scale && Math.abs(this.y - food.y) < scale) {
                     this.total++;
                     updateScore(this.total);  // Update score when snake eats food
                     return true;

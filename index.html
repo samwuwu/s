@@ -94,10 +94,10 @@
         let isGameOver = false;
         let currentScore = 0;
 
-        // Adjust canvas to appropriate size
+        // 调整画布大小
         function resizeCanvas() {
             const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9); // 将尺寸增大到90%
-            canvas.width = Math.min(maxSize, 600);  // 可以根据需要调整最大值，例如 600px
+            canvas.width = Math.min(maxSize, 600);  // 最大宽度600px
             canvas.height = canvas.width;  // 保持正方形
             scale = canvas.width / 20;  // 动态调整 scale，以适应更大的画布
             rows = Math.floor(canvas.height / scale);
@@ -106,7 +106,7 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Snake constructor
+        // Snake 构造函数
         function Snake() {
             this.x = 0;
             this.y = 0;
@@ -136,7 +136,7 @@
                 this.x += this.xSpeed;
                 this.y += this.ySpeed;
 
-                // Wrap snake around canvas edges
+                // 当蛇超过画布边界时从另一边出现
                 if (this.x >= canvas.width) this.x = 0;
                 if (this.y >= canvas.height) this.y = 0;
                 if (this.x < 0) this.x = canvas.width - scale;
@@ -173,10 +173,10 @@
             };
 
             this.eat = function(food) {
-                // 检查蛇的头部是否正好位于食物位置
-                if (Math.abs(this.x - food.x) < scale && Math.abs(this.y - food.y) < scale) {
+                // 严格检测蛇的头部是否正好位于食物位置
+                if (this.x === food.x && this.y === food.y) {
                     this.total++;
-                    updateScore(this.total);  // Update score when snake eats food
+                    updateScore(this.total);  // 更新分数
                     return true;
                 }
                 return false;
@@ -191,7 +191,7 @@
             };
         }
 
-        // Food constructor
+        // Food 构造函数
         function Food() {
             this.x;
             this.y;
@@ -207,10 +207,10 @@
             };
         }
 
-        // Start game
+        // 开始游戏
         function startGame() {
             if (gameInterval) {
-                clearInterval(gameInterval);  // Clear any existing interval
+                clearInterval(gameInterval);  // 清除现有的 interval
             }
 
             snake = new Snake();
@@ -233,54 +233,54 @@
                 snake.checkCollision();
             }, 100);
 
-            startButton.style.display = 'none'; // Hide the start button when game starts
-            restartButton.style.display = 'none'; // Ensure restart button is hidden when game starts
+            startButton.style.display = 'none'; // 隐藏开始按钮
+            restartButton.style.display = 'none'; // 确保重新开始按钮隐藏
         }
 
-        // End game and show score popup
+        // 结束游戏并显示分数弹窗
         function endGame() {
             clearInterval(gameInterval);
             isGameOver = true;
             scoreText.textContent = `游戏结束！你的得分是：${snake.total}`;
             scorePopup.style.display = 'block';
-            restartButton.style.display = 'block'; // Show restart button when game ends
+            restartButton.style.display = 'block'; // 显示重新开始按钮
         }
 
-        // Restart game
+        // 重新开始游戏
         function restartGame() {
-            scorePopup.style.display = 'none'; // Hide score popup
-            isGameOver = false;  // Reset game state
-            currentScore = 0;    // Reset score
-            snake = new Snake(); // Reset snake state
-            startGame();         // Restart the game
+            scorePopup.style.display = 'none'; // 隐藏分数弹窗
+            isGameOver = false;  // 重置游戏状态
+            currentScore = 0;    // 重置得分
+            snake = new Snake(); // 重置蛇的状态
+            startGame();         // 重新开始游戏
         }
 
-        // Update score display
+        // 更新得分显示
         function updateScore(score) {
             scoreDisplay.textContent = `得分: ${score}`;
         }
 
-        // Initial setup to start game on button click
+        // 初始化设置，点击按钮开始游戏
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', restartGame);
 
-        // Handle touch events for mobile control on the canvas
+        // 处理移动端触摸事件
         canvas.addEventListener('touchstart', handleTouchStart, false);
         canvas.addEventListener('touchmove', handleTouchMove, false);
 
-        // Handle touch start
+        // 处理触摸开始事件
         function handleTouchStart(evt) {
-            evt.preventDefault();  // Prevent default touch behavior
-            if (isGameOver) return; // Don't allow movement if game is over
+            evt.preventDefault();  // 阻止默认的触摸行为
+            if (isGameOver) return; // 游戏结束时禁止移动
 
             const firstTouch = evt.touches[0];
             touchStartX = firstTouch.clientX;
             touchStartY = firstTouch.clientY;
         }
 
-        // Handle touch move
+        // 处理触摸滑动事件
         function handleTouchMove(evt) {
-            evt.preventDefault();  // Prevent default touch behavior
+            evt.preventDefault();  // 阻止默认的触摸行为
             if (!touchStartX || !touchStartY || isGameOver) return;
 
             const touchEndX = evt.touches[0].clientX;
@@ -304,7 +304,7 @@
             }
         }
 
-        // Variables for touch tracking
+        // 用于触摸追踪的变量
         let touchStartX = null;
         let touchStartY = null;
     </script>

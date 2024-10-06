@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimized Snake Game</title>
+    <title>优化版车蛇游戏</title>
     <style>
         body, html {
             margin: 0;
@@ -74,15 +74,13 @@
 </head>
 <body>
     <div id="gameContainer">
-        <button id="startButton">Start Game</button>
-        <div id="scoreDisplay">Score: 0</div>
+                <div id="scoreDisplay">得分: 0</div>
         <canvas id="gameCanvas"></canvas>
-        <button id="startButton">Start Game</button>
+        <button id="startButton">开始游戏</button>
     </div>
     <div id="scorePopup">
         <p id="scoreText"></p>
-        <button id="restartButton">Restart</button>
-    </div>
+            </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -233,7 +231,7 @@
         function endGame() {
             clearInterval(gameInterval);
             isGameOver = true;
-            scoreText.textContent = `Game Over! Your score: ${snake.total}`;
+            scoreText.textContent = `游戏结束！你的得分是: ${snake.total}`;
             restartButton.style.display = 'block';
             scorePopup.style.display = 'block';
         }

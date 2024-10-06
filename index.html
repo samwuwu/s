@@ -3,28 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game with Touch Control</title>
+    <title>Optimized Snake Game</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             background-color: #f0f0f0;
             overflow: hidden;
         }
         #gameContainer {
-            display: block;
-            width: 100%;
-            position: relative;
-            top: 0;
-            left: 0;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         canvas {
-            display: block;
             background-color: #000;
-            margin: 0 auto;
             margin-top: 20px;
         }
         #scoreDisplay {
@@ -33,21 +31,18 @@
             margin: 10px 0;
             font-family: Arial, sans-serif;
         }
-        #startButton {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px 40px;
+        #startButton, #restartButton {
+            padding: 15px 30px;
             background-color: #28a745;
             color: white;
             font-size: 20px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
+            margin-top: 20px;
         }
         #scorePopup {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -59,31 +54,17 @@
             display: none;
             border-radius: 10px;
         }
-        #restartButton {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 20px 40px;
-            background-color: #28a745;
-            color: white;
-            font-size: 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            display: none;
-        }
     </style>
 </head>
 <body>
     <div id="gameContainer">
-        <div id="scoreDisplay">得分: 0</div>
+        <div id="scoreDisplay">Score: 0</div>
         <canvas id="gameCanvas"></canvas>
+        <button id="startButton">Start Game</button>
     </div>
-    <button id="startButton">开始游戏</button>
     <div id="scorePopup">
         <p id="scoreText"></p>
-        <button id="restartButton">重新开始</button>
+        <button id="restartButton">Restart</button>
     </div>
 
     <script>
@@ -101,21 +82,18 @@
         let food;
         let gameInterval;
         let isGameOver = false;
-        let currentScore = 0;
 
-        // 调整画布大小
         function resizeCanvas() {
             const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9);
-            canvas.width = Math.min(maxSize, 600);  // 最大宽度600px
-            canvas.height = canvas.width;  // 保持正方形
-            scale = canvas.width / 20;  // 动态调整 scale
+            canvas.width = Math.min(maxSize, 600);
+            canvas.height = canvas.width;
+            scale = canvas.width / 20;
             rows = Math.floor(canvas.height / scale);
             columns = Math.floor(canvas.width / scale);
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Snake 构造函数
         function Snake() {
             this.x = 0;
             this.y = 0;
@@ -129,7 +107,6 @@
                 for (let i = 0; i < this.tail.length; i++) {
                     ctx.fillRect(this.tail[i].x, this.tail[i].y, scale, scale);
                 }
-
                 ctx.fillRect(this.x, this.y, scale, scale);
             };
 
@@ -137,15 +114,11 @@
                 for (let i = 0; i < this.tail.length - 1; i++) {
                     this.tail[i] = this.tail[i + 1];
                 }
-
                 if (this.total > 0) {
                     this.tail[this.total - 1] = { x: this.x, y: this.y };
                 }
-
                 this.x += this.xSpeed;
                 this.y += this.ySpeed;
-
-                // 当蛇超过画布边界时从另一边出现
                 if (this.x >= canvas.width) this.x = 0;
                 if (this.y >= canvas.height) this.y = 0;
                 if (this.x < 0) this.x = canvas.width - scale;
@@ -182,10 +155,9 @@
             };
 
             this.eat = function(food) {
-                // 严格检查蛇的头部是否完全匹配食物的位置
                 if (this.x === food.x && this.y === food.y) {
                     this.total++;
-                    updateScore(this.total);  // 更新得分
+                    updateScore(this.total);
                     return true;
                 }
                 return false;
@@ -200,13 +172,11 @@
             };
         }
 
-        // Food 构造函数
         function Food() {
             this.x;
             this.y;
 
             this.randomLocation = function() {
-                // 确保食物生成在网格上
                 this.x = Math.floor(Math.random() * columns) * scale;
                 this.y = Math.floor(Math.random() * rows) * scale;
             };
@@ -217,17 +187,14 @@
             };
         }
 
-        // 开始游戏
         function startGame() {
             if (gameInterval) {
-                clearInterval(gameInterval);  // 清除现有的 interval
+                clearInterval(gameInterval);
             }
-
             snake = new Snake();
             food = new Food();
             food.randomLocation();
             isGameOver = false;
-            currentScore = 0;
             updateScore(0);
 
             gameInterval = window.setInterval(() => {
@@ -235,88 +202,67 @@
                 food.draw();
                 snake.update();
                 snake.draw();
-
                 if (snake.eat(food)) {
                     food.randomLocation();
                 }
-
                 snake.checkCollision();
             }, 100);
 
-            startButton.style.display = 'none'; // 隐藏开始按钮
-            restartButton.style.display = 'none'; // 确保重新开始按钮隐藏
+            startButton.style.display = 'none';
+            restartButton.style.display = 'none';
         }
 
-        // 结束游戏并显示分数弹窗
         function endGame() {
             clearInterval(gameInterval);
             isGameOver = true;
-            scoreText.textContent = `游戏结束！你的得分是：${snake.total}`;
+            scoreText.textContent = `Game Over! Your score: ${snake.total}`;
             scorePopup.style.display = 'block';
-            restartButton.style.display = 'block'; // 显示重新开始按钮
         }
 
-        // 重新开始游戏
         function restartGame() {
-            scorePopup.style.display = 'none'; // 隐藏分数弹窗
-            isGameOver = false;  // 重置游戏状态
-            currentScore = 0;    // 重置得分
-            snake = new Snake(); // 重置蛇的状态
-            startGame();         // 重新开始游戏
+            scorePopup.style.display = 'none';
+            startGame();
         }
 
-        // 更新得分显示
         function updateScore(score) {
-            scoreDisplay.textContent = `得分: ${score}`;
+            scoreDisplay.textContent = `Score: ${score}`;
         }
 
-        // 初始化设置，点击按钮开始游戏
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', restartGame);
 
-        // 处理移动端触摸事件
+        window.addEventListener('keydown', (e) => {
+            const direction = e.key.replace('Arrow', '');
+            snake.changeDirection(direction);
+        });
+
         canvas.addEventListener('touchstart', handleTouchStart, false);
         canvas.addEventListener('touchmove', handleTouchMove, false);
 
-        // 处理触摸开始事件
-        function handleTouchStart(evt) {
-            evt.preventDefault();  // 阻止默认的触摸行为
-            if (isGameOver) return; // 游戏结束时禁止移动
+        let touchStartX = null;
+        let touchStartY = null;
 
+        function handleTouchStart(evt) {
+            evt.preventDefault();
+            if (isGameOver) return;
             const firstTouch = evt.touches[0];
             touchStartX = firstTouch.clientX;
             touchStartY = firstTouch.clientY;
         }
 
-        // 处理触摸滑动事件
         function handleTouchMove(evt) {
-            evt.preventDefault();  // 阻止默认的触摸行为
+            evt.preventDefault();
             if (!touchStartX || !touchStartY || isGameOver) return;
-
             const touchEndX = evt.touches[0].clientX;
             const touchEndY = evt.touches[0].clientY;
-
             const deltaX = touchEndX - touchStartX;
             const deltaY = touchEndY - touchStartY;
-
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > 0) {
-                    snake.changeDirection('Right');
-                } else {
-                    snake.changeDirection('Left');
-                }
+                snake.changeDirection(deltaX > 0 ? 'Right' : 'Left');
             } else {
-                if (deltaY > 0) {
-                    snake.changeDirection('Down');
-                } else {
-                    snake.changeDirection('Up');
-                }
+                snake.changeDirection(deltaY > 0 ? 'Down' : 'Up');
             }
         }
-
-        // 用于触摸追踪的变量
-        let touchStartX = null;
-        let touchStartY = null;
     </script>
 </body>
 </html>

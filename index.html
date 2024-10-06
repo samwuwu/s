@@ -25,7 +25,7 @@
             display: block;
             background-color: #000;
             margin: 0 auto;
-            margin-top: 20px; /* 将画布距离顶部稍微留出一些空间 */
+            margin-top: 20px;
         }
         #scoreDisplay {
             font-size: 24px;
@@ -105,10 +105,10 @@
 
         // 调整画布大小
         function resizeCanvas() {
-            const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9); // 将尺寸增大到90%
+            const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9);
             canvas.width = Math.min(maxSize, 600);  // 最大宽度600px
             canvas.height = canvas.width;  // 保持正方形
-            scale = canvas.width / 20;  // 动态调整 scale，以适应更大的画布
+            scale = canvas.width / 20;  // 动态调整 scale
             rows = Math.floor(canvas.height / scale);
             columns = Math.floor(canvas.width / scale);
         }

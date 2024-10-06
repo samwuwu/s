@@ -26,7 +26,7 @@
             margin-bottom: 10px;
             font-family: Arial, sans-serif;
         }
-        #startButton, #restartButton {
+        #startButton {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -51,6 +51,20 @@
             text-align: center;
             display: none;
             border-radius: 10px;
+        }
+        #restartButton {
+            position: fixed;
+            bottom: 20px; /* Positioning at the bottom */
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px 40px;
+            background-color: #28a745;
+            color: white;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: none; /* Initially hidden */
         }
     </style>
 </head>
@@ -213,6 +227,7 @@
             }, 100);
 
             startButton.style.display = 'none'; // Hide the start button when game starts
+            restartButton.style.display = 'none'; // Ensure restart button is hidden when game starts
         }
 
         // End game and show score popup
@@ -221,6 +236,7 @@
             isGameOver = true;
             scoreText.textContent = `游戏结束！你的得分是：${snake.total}`;
             scorePopup.style.display = 'block';
+            restartButton.style.display = 'block'; // Show restart button when game ends
         }
 
         // Restart game
@@ -260,26 +276,30 @@
             const touchEndX = evt.touches[0].clientX;
             const touchEndY = evt.touches[0].clientY;
 
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
 
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX > 0) {
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
                     snake.changeDirection('Right');
                 } else {
                     snake.changeDirection('Left');
                 }
             } else {
-                if (diffY > 0) {
+                if (deltaY > 0) {
                     snake.changeDirection('Down');
                 } else {
                     snake.changeDirection('Up');
                 }
             }
 
-            touchStartX = null;
-            touchStartY = null;
+            touchStartX = touchEndX;
+            touchStartY = touchEndY;
         }
+
+        // Variables for touch tracking
+        let touchStartX = null;
+        let touchStartY = null;
     </script>
 </body>
 </html>

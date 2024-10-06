@@ -18,19 +18,57 @@
         canvas {
             display: block;
         }
+        #startButton, #restartButton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            background-color: #28a745;
+            color: white;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #scorePopup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            display: none;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
+    <button id="startButton">开始游戏</button>
+    <div id="scorePopup">
+        <p id="scoreText"></p>
+        <button id="restartButton">重新开始</button>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+        const scorePopup = document.getElementById('scorePopup');
+        const scoreText = document.getElementById('scoreText');
+        const restartButton = document.getElementById('restartButton');
         let scale = 20;
         let rows, columns;
 
         let snake;
         let food;
+        let gameInterval;
+        let isGameOver = false;
+
         let touchStartX, touchStartY;
 
         // Adjust canvas to full screen
@@ -110,7 +148,6 @@
             };
 
             this.eat = function(food) {
-                // Ensure that both positions are strictly aligned to the grid
                 if (this.x === food.x && this.y === food.y) {
                     this.total++;
                     return true;
@@ -121,8 +158,7 @@
             this.checkCollision = function() {
                 for (let i = 0; i < this.tail.length; i++) {
                     if (this.x === this.tail[i].x && this.y === this.tail[i].y) {
-                        this.total = 0;
-                        this.tail = [];
+                        endGame();
                     }
                 }
             };
@@ -134,7 +170,6 @@
             this.y;
 
             this.randomLocation = function() {
-                // Generate a random location that aligns with the grid
                 this.x = Math.floor(Math.random() * columns) * scale;
                 this.y = Math.floor(Math.random() * rows) * scale;
             };
@@ -145,13 +180,14 @@
             };
         }
 
-        // Initialize game
-        (function setup() {
+        // Start game
+        function startGame() {
             snake = new Snake();
             food = new Food();
             food.randomLocation();
+            isGameOver = false;
 
-            window.setInterval(() => {
+            gameInterval = window.setInterval(() => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 food.draw();
                 snake.update();
@@ -164,14 +200,36 @@
                 snake.checkCollision();
             }, 100);
 
-            // Touch events for mobile control
-            canvas.addEventListener('touchstart', handleTouchStart, false);
-            canvas.addEventListener('touchmove', handleTouchMove, false);
-        })();
+            startButton.style.display = 'none'; // Hide the start button when game starts
+        }
+
+        // End game and show score popup
+        function endGame() {
+            clearInterval(gameInterval);
+            isGameOver = true;
+            scoreText.textContent = `游戏结束！你的得分是：${snake.total}`;
+            scorePopup.style.display = 'block';
+        }
+
+        // Restart game
+        function restartGame() {
+            scorePopup.style.display = 'none'; // Hide score popup
+            startGame(); // Restart the game
+        }
+
+        // Initial setup to start game on button click
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', restartGame);
+
+        // Handle touch events for mobile control
+        canvas.addEventListener('touchstart', handleTouchStart, false);
+        canvas.addEventListener('touchmove', handleTouchMove, false);
 
         // Handle touch start
         function handleTouchStart(evt) {
             evt.preventDefault();  // Prevent default touch behavior
+            if (isGameOver) return; // Don't allow movement if game is over
+
             const firstTouch = evt.touches[0];
             touchStartX = firstTouch.clientX;
             touchStartY = firstTouch.clientY;
@@ -180,9 +238,7 @@
         // Handle touch move
         function handleTouchMove(evt) {
             evt.preventDefault();  // Prevent default touch behavior
-            if (!touchStartX || !touchStartY) {
-                return;
-            }
+            if (!touchStartX || !touchStartY || isGameOver) return;
 
             const touchEndX = evt.touches[0].clientX;
             const touchEndY = evt.touches[0].clientY;

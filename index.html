@@ -238,9 +238,9 @@
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', restartGame);
 
-        // Handle touch events for mobile control
-        canvas.addEventListener('touchstart', handleTouchStart, false);
-        canvas.addEventListener('touchmove', handleTouchMove, false);
+        // Handle touch events for mobile control on the entire body
+        document.body.addEventListener('touchstart', handleTouchStart, false);
+        document.body.addEventListener('touchmove', handleTouchMove, false);
 
         // Handle touch start
         function handleTouchStart(evt) {

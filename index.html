@@ -33,7 +33,7 @@
         let food;
         let touchStartX, touchStartY;
 
-        // Adjust canvas to fit the window
+        // Adjust canvas to full screen
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -110,6 +110,7 @@
             };
 
             this.eat = function(food) {
+                // Ensure that both positions are strictly aligned to the grid
                 if (this.x === food.x && this.y === food.y) {
                     this.total++;
                     return true;
@@ -133,6 +134,7 @@
             this.y;
 
             this.randomLocation = function() {
+                // Generate a random location that aligns with the grid
                 this.x = Math.floor(Math.random() * columns) * scale;
                 this.y = Math.floor(Math.random() * rows) * scale;
             };

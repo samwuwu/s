@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>优化版车蛇游戏</title>
+    <link rel="icon" href="img/snake.svg" type="image/svg">
+    <title>休息🐍下</title>
     <style>
         body, html {
             margin: 0;
@@ -74,16 +75,17 @@
 </head>
 <body>
     <div id="gameContainer">
-                <div id="controlCard" style="display: flex; align-items: center; justify-content: space-between; background-color: #fff; padding: 10px; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); margin-bottom: 20px; gap: 10px; width: 100%; max-width: 600px; box-sizing: border-box;">
+        <div id="controlCard" style="display: flex; align-items: center; justify-content: space-between; background-color: #fff; padding: 10px; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); margin-bottom: 20px; gap: 10px; width: 100%; max-width: 600px; box-sizing: border-box;">
             <button id="startButton" style="padding: 5px; font-size: 18px; height: 50px; width: 120px;">开始游戏</button>
             <div id="scoreDisplay" style="height: 30px; width: 100px; display: flex; align-items: center; justify-content: center;">得分: 0</div>
         </div>
-        </div>
-        <canvas id="gameCanvas" style="border-radius: 10px;"></canvas>
-            </div>
+    </div>
+    <canvas id="gameCanvas" style="border-radius: 10px;"></canvas>
     <div id="scorePopup">
         <p id="scoreText"></p>
-        <button id="restartButton" style="display: block; margin: 20px auto;">重新开始</button>
+        <input type="text" id="playerName" placeholder="请输入您的姓名" style="padding: 10px; font-size: 18px; margin-top: 10px;">
+        <button id="submitScoreButton" style="display: block; margin: 20px auto;">提交分数</button>
+        <button id="restartButton" style="display: block; margin: 20px auto;">再来一次？？？</button>
     </div>
 
     <script>
@@ -93,6 +95,8 @@
         const scorePopup = document.getElementById('scorePopup');
         const scoreText = document.getElementById('scoreText');
         const restartButton = document.getElementById('restartButton');
+        const submitScoreButton = document.getElementById('submitScoreButton');
+        const playerNameInput = document.getElementById('playerName');
         const scoreDisplay = document.getElementById('scoreDisplay');
         let scale = 20;
         let rows, columns;
@@ -101,6 +105,7 @@
         let food;
         let gameInterval;
         let isGameOver = false;
+        let leaderboard = [];
 
         function resizeCanvas() {
             const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.9);
@@ -226,7 +231,7 @@
                     food.randomLocation();
                 }
                 snake.checkCollision();
-            }, 100);
+            }, 150);
 
             startButton.style.display = 'none';
         }
@@ -250,8 +255,25 @@
             scoreDisplay.textContent = `Score: ${score}`;
         }
 
+        function submitScore() {
+            const playerName = playerNameInput.value.trim();
+            if (playerName === "") {
+                alert("请输入有效的姓名！");
+                return;
+            }
+
+            leaderboard.push({ name: playerName, score: snake.total });
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard = leaderboard.slice(0, 3);
+
+            console.log("Leaderboard:", leaderboard);
+            scorePopup.style.display = 'none';
+            restartButton.style.display = 'block';
+        }
+
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', restartGame);
+        submitScoreButton.addEventListener('click', submitScore);
 
         window.addEventListener('keydown', (e) => {
             if (isGameOver) return;
@@ -287,5 +309,7 @@
             }
         }
     </script>
+
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a7a1518d83e42549d96d6c490ef4776"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

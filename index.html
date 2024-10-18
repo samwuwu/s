@@ -80,6 +80,10 @@
             <div id="scoreDisplay" style="height: 30px; width: 100px; display: flex; align-items: center; justify-content: center;">得分: 0</div>
         </div>
     </div>
+    <div id="leaderboardContainer" style="margin-top: 20px; background-color: #fff; padding: 10px; border-radius: 10px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); max-width: 600px; width: 100%;">
+        <h3 style="text-align: center;">排行榜</h3>
+        <ol id="leaderboardList" style="font-size: 18px; padding-left: 20px;"></ol>
+    </div>
     <canvas id="gameCanvas" style="border-radius: 10px;"></canvas>
     <div id="scorePopup">
         <p id="scoreText"></p>
@@ -238,6 +242,15 @@
             scoreText.textContent = `游戏结束！你的得分是: ${snake.total}`;
             scorePopup.style.display = 'block';
             restartButton.style.display = 'block';
+            if (leaderboard.length < 3 || snake.total > leaderboard[leaderboard.length - 1].score) {
+                playerNameInput = document.createElement('input');
+                playerNameInput.type = 'text';
+                playerNameInput.placeholder = '请输入您的姓名';
+                playerNameInput.style.padding = '10px';
+                playerNameInput.style.fontSize = '18px';
+                playerNameInput.style.marginTop = '10px';
+                scorePopup.insertBefore(playerNameInput, restartButton);
+            }
         }
 
         function restartGame() {
@@ -257,6 +270,15 @@
                 alert("请输入有效的姓名！");
                 return;
             }
+
+            leaderboard.push({ name: playerName, score: snake.total });
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard = leaderboard.slice(0, 3);
+
+            updateLeaderboardDisplay();
+            scorePopup.style.display = 'none';
+            restartButton.style.display = 'block';
+        }
 
             leaderboard.push({ name: playerName, score: snake.total });
             leaderboard.sort((a, b) => b.score - a.score);
@@ -304,6 +326,16 @@
                 snake.changeDirection(deltaY > 0 ? 'Down' : 'Up');
             }
         }
+    function updateLeaderboardDisplay() {
+        const leaderboardList = document.getElementById('leaderboardList');
+        leaderboardList.innerHTML = '';
+        leaderboard.forEach((entry) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${entry.name}: ${entry.score}`;
+            leaderboardList.appendChild(listItem);
+        });
+    }
+
     </script>
 
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a7a1518d83e42549d96d6c490ef4776"}'></script><!-- End Cloudflare Web Analytics -->

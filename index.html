@@ -213,6 +213,7 @@
         }
 
         function startGame() {
+            updateLeaderboardDisplay();
             if (gameInterval) {
                 clearInterval(gameInterval);
             }
@@ -250,6 +251,22 @@
                 playerNameInput.style.fontSize = '18px';
                 playerNameInput.style.marginTop = '10px';
                 scorePopup.insertBefore(playerNameInput, restartButton);
+                submitScoreButton = document.createElement('button');
+                submitScoreButton.textContent = '提交分数';
+                submitScoreButton.style.display = 'block';
+                submitScoreButton.style.margin = '20px auto';
+                scorePopup.insertBefore(submitScoreButton, restartButton);
+                
+            }
+        }
+            if (leaderboard.length < 3 || snake.total > leaderboard[leaderboard.length - 1].score) {
+                playerNameInput = document.createElement('input');
+                playerNameInput.type = 'text';
+                playerNameInput.placeholder = '请输入您的姓名';
+                playerNameInput.style.padding = '10px';
+                playerNameInput.style.fontSize = '18px';
+                playerNameInput.style.marginTop = '10px';
+                scorePopup.insertBefore(playerNameInput, restartButton);
             }
         }
 
@@ -274,66 +291,7 @@
             leaderboard.push({ name: playerName, score: snake.total });
             leaderboard.sort((a, b) => b.score - a.score);
             leaderboard = leaderboard.slice(0, 3);
-
             updateLeaderboardDisplay();
-            scorePopup.style.display = 'none';
-            restartButton.style.display = 'block';
-        }
-
-            leaderboard.push({ name: playerName, score: snake.total });
-            leaderboard.sort((a, b) => b.score - a.score);
-            leaderboard = leaderboard.slice(0, 3);
-
-            console.log("Leaderboard:", leaderboard);
-            scorePopup.style.display = 'none';
-            restartButton.style.display = 'block';
-        }
-
-        startButton.addEventListener('click', startGame);
-        restartButton.addEventListener('click', restartGame);
-        submitScoreButton.addEventListener('click', submitScore);
-
-        window.addEventListener('keydown', (e) => {
-            if (isGameOver) return;
-            const direction = e.key.replace('Arrow', '');
-            snake.changeDirection(direction);
-        });
-
-        document.body.addEventListener('touchstart', handleTouchStart, false);
-        document.body.addEventListener('touchmove', handleTouchMove, false);
-
-        let touchStartX = null;
-        let touchStartY = null;
-
-        function handleTouchStart(evt) {
-            evt.preventDefault();
-            if (isGameOver) return;
-            const firstTouch = evt.touches[0];
-            touchStartX = firstTouch.clientX;
-            touchStartY = firstTouch.clientY;
-        }
-
-        function handleTouchMove(evt) {
-            evt.preventDefault();
-            if (!touchStartX || !touchStartY || isGameOver) return;
-            const touchEndX = evt.touches[0].clientX;
-            const touchEndY = evt.touches[0].clientY;
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                snake.changeDirection(deltaX > 0 ? 'Right' : 'Left');
-            } else {
-                snake.changeDirection(deltaY > 0 ? 'Down' : 'Up');
-            }
-        }
-    function updateLeaderboardDisplay() {
-        const leaderboardList = document.getElementById('leaderboardList');
-        leaderboardList.innerHTML = '';
-        leaderboard.forEach((entry) => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${entry.name}: ${entry.score}`;
-            leaderboardList.appendChild(listItem);
-        });
     }
 
     </script>

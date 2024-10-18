@@ -83,8 +83,6 @@
     <canvas id="gameCanvas" style="border-radius: 10px;"></canvas>
     <div id="scorePopup">
         <p id="scoreText"></p>
-        <input type="text" id="playerName" placeholder="请输入您的姓名" style="padding: 10px; font-size: 18px; margin-top: 10px;">
-        <button id="submitScoreButton" style="display: block; margin: 20px auto;">提交分数</button>
         <button id="restartButton" style="display: block; margin: 20px auto;">再来一次？？？</button>
     </div>
 
@@ -95,8 +93,6 @@
         const scorePopup = document.getElementById('scorePopup');
         const scoreText = document.getElementById('scoreText');
         const restartButton = document.getElementById('restartButton');
-        const submitScoreButton = document.getElementById('submitScoreButton');
-        const playerNameInput = document.getElementById('playerName');
         const scoreDisplay = document.getElementById('scoreDisplay');
         let scale = 20;
         let rows, columns;
